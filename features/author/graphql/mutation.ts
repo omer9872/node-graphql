@@ -1,13 +1,14 @@
 import container from "../../../utils/container";
+import { Pagination } from "../../../utils/types/http";
 import { IAuthor } from "../interfaces/Author";
 import { IAuthorService } from "../service/Author.service";
 
 const authorService = container.get<IAuthorService>("AuthorService");
 
-const authorGraphQLResolver = {
+export const authorGraphQLResolver = {
   Query: {
-    getAuthors: async () => {
-      return (await authorService.getAuthors()).data;
+    getAuthors: async (parent: unknown, args: Pagination, context: unknown, info: unknown) => {
+      return (await authorService.getAuthors({ page: args.page, count: args.count })).data;
     },
     getAuthor: async (parent: unknown, args: { id: string }, context: unknown, info: unknown) => {
       return (await authorService.getAuthor(args.id)).data;
@@ -19,5 +20,3 @@ const authorGraphQLResolver = {
     }
   }
 }
-
-export default authorGraphQLResolver;

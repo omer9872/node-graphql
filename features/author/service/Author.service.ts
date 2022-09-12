@@ -2,13 +2,13 @@ import { injectable } from "inversify";
 import "reflect-metadata";
 
 import { Types } from 'mongoose';
-import { IResponseResult } from "../../../utils/types/response";
+import { DEFAULTS, IResponseResult, Pagination } from "../../../utils/types/http";
 import { IAuthor } from "../interfaces/Author";
 import AuthorModel from "../repository/Author.model";
 
 export interface IAuthorService {
   getAuthor: (authorId: string) => Promise<IResponseResult<IAuthor>>
-  getAuthors: () => Promise<IResponseResult<IAuthor[]>>
+  getAuthors: (pagination: Pagination) => Promise<IResponseResult<IAuthor[]>>
   createAuthor: (author: IAuthor) => Promise<IResponseResult<Types.ObjectId>>
 }
 
@@ -22,12 +22,14 @@ export class AuthorService implements IAuthorService {
       data: data
     } as IResponseResult<IAuthor>;
   };
-  public getAuthors = async () => {
-    const data = await AuthorModel.find();
+  public getAuthors = async (pagination: Pagination) => {
+    const page = pagination.page ?? DEFAULTS.PAGE;
+    const count = pagination.count ?? DEFAULTS.COUNT;
+    const data = await AuthorModel.find().limit(page * count);
     return {
       statusCode: 200,
       message: "...",
-      data: data
+      data: data.slice((page - 1) * count)
     } as IResponseResult<IAuthor[]>;
   };
   public createAuthor = async (author: IAuthor) => {

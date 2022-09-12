@@ -1,6 +1,6 @@
 import { buildSchema } from "graphql";
 
-const postGraphQLSchema = buildSchema(`
+export const postGraphQLSchema = buildSchema(`
   scalar Date
 
   type Post {
@@ -21,12 +21,10 @@ const postGraphQLSchema = buildSchema(`
   }
 
   type Query {
-    getPosts: [Post!]!
-    getPost(id : String!): Post
+    getPosts(page:Int, count:Int): [Post!]!
+    getPost(id : String!): Post!
   }
   type Mutation {
     createPost(input: PostCreateInput): String
   }
 `);
-
-export default postGraphQLSchema;

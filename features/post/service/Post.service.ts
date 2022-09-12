@@ -1,14 +1,13 @@
 import { injectable } from "inversify";
 import "reflect-metadata";
 
-import { IResponseResult } from "../../../utils/types/response";
+import { DEFAULTS, IResponseResult, Pagination } from "../../../utils/types/http";
 import { IPost } from "../interfaces/Post";
 import PostModel from "../repository/Post.model";
 
-
 export interface IPostService {
   getPost: (postId: string) => Promise<IResponseResult<IPost>>
-  getPosts: () => Promise<IResponseResult<IPost[]>>
+  getPosts: (pagination: Pagination) => Promise<IResponseResult<IPost[]>>
   createPost: (post: IPost) => Promise<IResponseResult<undefined>>
 }
 
@@ -18,16 +17,18 @@ export class PostService implements IPostService {
     const data = await PostModel.findOne({ _id: postId });
     return {
       statusCode: 200,
-      message: "",
+      message: "...",
       data: data
     } as IResponseResult<IPost>;
   };
-  public getPosts = async () => {
-    const data = await PostModel.find();
+  public getPosts = async (pagination: Pagination) => {
+    const page = pagination.page ?? DEFAULTS.PAGE;
+    const count = pagination.count ?? DEFAULTS.COUNT;
+    const data = await PostModel.find().limit(page * count);
     return {
       statusCode: 200,
-      message: "",
-      data: data
+      message: "...",
+      data: data.slice((page - 1) * count)
     } as IResponseResult<IPost[]>;
   };
   public createPost = async (post: IPost) => {
@@ -35,7 +36,7 @@ export class PostService implements IPostService {
     await model.save();
     return {
       statusCode: 200,
-      message: "",
+      message: "...",
       data: undefined
     } as IResponseResult<undefined>;
   };

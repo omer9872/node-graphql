@@ -16,6 +16,6 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use('/author', authorRouter);
 server.use('/post', postRouter);
 
-server.listen(3000, () => {
-  console.log(`Server is on Port: ${3000}`);
+server.listen(process.env.SERVER_PORT, () => {
+  console.log(`Server is on Port: ${process.env.SERVER_PORT}`);
 })

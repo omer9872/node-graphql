@@ -1,6 +1,6 @@
 import { buildSchema } from "graphql";
 
-const authorGraphQLSchema = buildSchema(`
+export const authorGraphQLSchema = buildSchema(`
   scalar Date
 
   type Author {
@@ -29,12 +29,10 @@ const authorGraphQLSchema = buildSchema(`
   }
 
   type Query {
-    getAuthors: [Author!]!
+    getAuthors(page:Int, count:Int): [Author!]!
     getAuthor(id : String!): Author
   }
   type Mutation {
     createAuthor(input: AuthorCreateInput): String
   }
 `);
-
-export default authorGraphQLSchema;
