@@ -1,6 +1,8 @@
 import { injectable } from "inversify";
 import "reflect-metadata";
 
+import { Types } from "mongoose";
+
 import { DEFAULTS, IResponseResult, Pagination } from "../../../utils/types/http";
 import { IPost } from "../interfaces/Post";
 import PostModel from "../repository/Post.model";
@@ -8,7 +10,7 @@ import PostModel from "../repository/Post.model";
 export interface IPostService {
   getPost: (postId: string) => Promise<IResponseResult<IPost>>
   getPosts: (pagination: Pagination) => Promise<IResponseResult<IPost[]>>
-  createPost: (post: IPost) => Promise<IResponseResult<undefined>>
+  createPost: (post: IPost) => Promise<IResponseResult<Types.ObjectId>>
 }
 
 @injectable()
@@ -33,11 +35,11 @@ export class PostService implements IPostService {
   };
   public createPost = async (post: IPost) => {
     const model = new PostModel(post);
-    await model.save();
+    const result = await model.save();
     return {
       statusCode: 200,
       message: "...",
-      data: undefined
-    } as IResponseResult<undefined>;
+      data: result._id
+    } as IResponseResult<Types.ObjectId>;
   };
 }

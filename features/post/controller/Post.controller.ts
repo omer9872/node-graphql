@@ -27,7 +27,7 @@ export class PostController implements IPostController {
     return res.status(response.statusCode).send(response);
   };
   public getPosts = async (req: Request, res: Response) => {
-    const response = await this._postService.getPosts()
+    const response = await this._postService.getPosts(req.params)
     return res.status(response.statusCode).send(response);
   };
   public createPost = async (req: Request, res: Response) => {

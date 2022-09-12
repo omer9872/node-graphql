@@ -27,7 +27,7 @@ export class AuthorController implements IAuthorController {
     return res.status(response.statusCode).send(response);
   };
   public getAuthors = async (req: Request, res: Response) => {
-    const response = await this._authorService.getAuthors()
+    const response = await this._authorService.getAuthors(req.params)
     return res.status(response.statusCode).send(response);
   };
   public createAuthor = async (req: Request, res: Response) => {
